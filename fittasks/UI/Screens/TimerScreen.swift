@@ -16,6 +16,7 @@ final class TimerViewModel: ObservableObject {
 
     private var timerCancellable: AnyCancellable?
     private var elapsedInCurrentTask = 0
+    private var lastProgressDate: Date?
 
     init(taskGroup: TaskGroup) {
         let firstTask = taskGroup.tasks.first
@@ -50,11 +51,15 @@ final class TimerViewModel: ObservableObject {
 
     func startTimer() {
         guard !state.isFinished, !state.isRunning else { return }
+        advanceThroughZeroDurationTasks()
+        guard !state.isFinished else { return }
+
         state.isRunning = true
+        lastProgressDate = Date()
         timerCancellable = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
-            .sink { [weak self] _ in
-                self?.tick()
+            .sink { [weak self] now in
+                self?.syncElapsedTime(referenceDate: now)
             }
     }
 
@@ -62,6 +67,7 @@ final class TimerViewModel: ObservableObject {
         state.isRunning = false
         timerCancellable?.cancel()
         timerCancellable = nil
+        lastProgressDate = nil
     }
 
     func stopTimer() {
@@ -80,15 +86,51 @@ final class TimerViewModel: ObservableObject {
         state.currentTaskID == task.id
     }
 
-    private func tick() {
+    func syncElapsedTime(referenceDate: Date = Date()) {
         guard state.isRunning, !state.isFinished else { return }
 
-        if state.remainingSeconds > 0 {
-            state.remainingSeconds -= 1
-            elapsedInCurrentTask += 1
+        advanceThroughZeroDurationTasks()
+        guard !state.isFinished else { return }
+
+        guard let lastProgressDate else {
+            self.lastProgressDate = referenceDate
+            return
         }
 
-        if state.remainingSeconds <= 0 {
+        let elapsedSeconds = max(Int(referenceDate.timeIntervalSince(lastProgressDate)), 0)
+        guard elapsedSeconds > 0 else { return }
+
+        consumeElapsedSeconds(elapsedSeconds)
+
+        if state.isRunning, !state.isFinished {
+            self.lastProgressDate = lastProgressDate.addingTimeInterval(TimeInterval(elapsedSeconds))
+            advanceThroughZeroDurationTasks()
+        }
+    }
+
+    private func consumeElapsedSeconds(_ elapsedSeconds: Int) {
+        var remainingElapsedSeconds = elapsedSeconds
+
+        // 画面が止まっていた間も含め、経過した実時間ぶんだけ一気に進行させる。
+        while remainingElapsedSeconds > 0, state.isRunning, !state.isFinished {
+            if state.remainingSeconds <= 0 {
+                advanceToNextTask()
+                continue
+            }
+
+            let consumedSeconds = min(state.remainingSeconds, remainingElapsedSeconds)
+            state.remainingSeconds -= consumedSeconds
+            elapsedInCurrentTask += consumedSeconds
+            remainingElapsedSeconds -= consumedSeconds
+
+            if state.remainingSeconds <= 0 {
+                advanceToNextTask()
+            }
+        }
+    }
+
+    private func advanceThroughZeroDurationTasks() {
+        while state.isRunningOrReadyForAdvance, state.remainingSeconds <= 0 {
             advanceToNextTask()
         }
     }
@@ -115,9 +157,16 @@ final class TimerViewModel: ObservableObject {
     }
 }
 
+private extension TimerViewModel.State {
+    var isRunningOrReadyForAdvance: Bool {
+        !isFinished && currentTaskID != nil
+    }
+}
+
 @MainActor
 struct TimerScreen: View {
     @EnvironmentObject private var store: AppStore
+    @Environment(\.scenePhase) private var scenePhase
 
     let onClose: () -> Void
 
@@ -174,6 +223,11 @@ struct TimerScreen: View {
         }
         .onDisappear {
             viewModel.stopTimer()
+        }
+        .onChange(of: scenePhase) { _, newValue in
+            if newValue == .active {
+                viewModel.syncElapsedTime()
+            }
         }
         .sheet(isPresented: $showsTaskListSheet) {
             NavigationStack {
