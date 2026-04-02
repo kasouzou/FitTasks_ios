@@ -66,6 +66,8 @@ enum AppText: String {
     case taskNameRequiredWarning
     case taskEditDiscardChangesTitle
     case taskEditDiscardChangesMessage
+    case taskEditPendingDraftExitTitle
+    case taskEditPendingDraftExitMessage
     case taskEditDiscardChangesButton
     case taskEditSaveChangesButton
 }
@@ -128,9 +130,9 @@ enum AppLocalization {
             .timerTitle: "タイマー",
             .nextTasks: "次のタスク",
             .openTaskListSheet: "一覧を拡大",
-            .timerExitConfirmTitle: "タイマーを閉じますか？",
-            .timerExitConfirmMessage: "計測中に戻ると、タイマーは終了します。",
-            .timerExitConfirmButton: "タイマーを閉じる",
+            .timerExitConfirmTitle: "タイマーを終了しますか？",
+            .timerExitConfirmMessage: "タイマーが動作中です。戻ると進行中の計測を終了します。",
+            .timerExitConfirmButton: "終了",
             .pauseButton: "一時停止",
             .playButton: "再開",
             .skipButton: "スキップ",
@@ -146,6 +148,8 @@ enum AppLocalization {
             .taskNameRequiredWarning: "タスク名を入力してください",
             .taskEditDiscardChangesTitle: "保存していない変更があります",
             .taskEditDiscardChangesMessage: "このまま戻ると、追加・編集した内容は保存されません。",
+            .taskEditPendingDraftExitTitle: "編集内容をどうしますか？",
+            .taskEditPendingDraftExitMessage: "このまま戻ると未保存の編集内容が失われます。編集を破棄するか、キャンセルして編集画面に戻ってください。",
             .taskEditDiscardChangesButton: "編集を破棄",
             .taskEditSaveChangesButton: "保存する"
         ],
@@ -215,6 +219,8 @@ enum AppLocalization {
             .taskNameRequiredWarning: "Enter a task name",
             .taskEditDiscardChangesTitle: "You have unsaved changes",
             .taskEditDiscardChangesMessage: "If you go back now, your added or edited content will be lost.",
+            .taskEditPendingDraftExitTitle: "What would you like to do with your edits?",
+            .taskEditPendingDraftExitMessage: "If you go back now, your unsaved edits will be lost. Discard them or cancel and return to the edit screen.",
             .taskEditDiscardChangesButton: "Discard edits",
             .taskEditSaveChangesButton: "Save"
         ],
@@ -284,6 +290,8 @@ enum AppLocalization {
             .taskNameRequiredWarning: "请输入任务名称",
             .taskEditDiscardChangesTitle: "有尚未保存的更改",
             .taskEditDiscardChangesMessage: "如果现在返回，刚刚新增或编辑的内容将不会保存。",
+            .taskEditPendingDraftExitTitle: "要如何处理这些编辑内容？",
+            .taskEditPendingDraftExitMessage: "如果现在返回，未保存的编辑内容将会丢失。你可以放弃编辑，或取消并返回编辑页面。",
             .taskEditDiscardChangesButton: "放弃编辑",
             .taskEditSaveChangesButton: "保存"
         ],
@@ -353,6 +361,8 @@ enum AppLocalization {
             .taskNameRequiredWarning: "작업 이름을 입력하세요",
             .taskEditDiscardChangesTitle: "저장하지 않은 변경 사항이 있습니다",
             .taskEditDiscardChangesMessage: "지금 돌아가면 방금 추가하거나 수정한 내용이 저장되지 않습니다.",
+            .taskEditPendingDraftExitTitle: "편집 내용을 어떻게 할까요?",
+            .taskEditPendingDraftExitMessage: "지금 돌아가면 저장하지 않은 편집 내용이 사라집니다. 편집을 폐기하거나 취소하고 편집 화면으로 돌아가세요.",
             .taskEditDiscardChangesButton: "편집 폐기",
             .taskEditSaveChangesButton: "저장하기"
         ]

@@ -48,6 +48,7 @@ private struct TaskEditSnapshot: Equatable {
     var startTime: ClockTime
     var endTime: ClockTime
     var taskDrafts: [EditableTaskDraft]
+    var pendingTaskName: String
 }
 
 struct TaskEditScreen: View {
@@ -101,28 +102,47 @@ struct TaskEditScreen: View {
             previewGroup.totalDurationSeconds > 0
     }
 
+    private var hasPendingNewTaskDraft: Bool {
+        isValidTaskTitle(taskName)
+    }
+
+    private var discardChangesAlertTitle: String {
+        hasPendingNewTaskDraft
+            ? store.text(.taskEditPendingDraftExitTitle)
+            : store.text(.taskEditDiscardChangesTitle)
+    }
+
+    private var discardChangesAlertMessage: String {
+        hasPendingNewTaskDraft
+            ? store.text(.taskEditPendingDraftExitMessage)
+            : store.text(.taskEditDiscardChangesMessage)
+    }
+
     private var baselineSnapshot: TaskEditSnapshot {
         if let group = currentGroup {
             return TaskEditSnapshot(
                 startTime: group.startTime,
                 endTime: group.endTime,
-                taskDrafts: group.tasks.map(EditableTaskDraft.init(task:))
+                taskDrafts: group.tasks.map(EditableTaskDraft.init(task:)),
+                pendingTaskName: ""
             )
         }
 
         return TaskEditSnapshot(
             startTime: .defaultStart,
             endTime: .defaultEnd,
-            taskDrafts: []
+            taskDrafts: [],
+            pendingTaskName: ""
         )
     }
 
     private var currentSnapshot: TaskEditSnapshot {
-        // 追加前の入力中データは保存対象ではないため、未保存判定から除外する。
+        // 追加前のタスク名入力も、戻ると失われるため未保存入力として扱う。
         TaskEditSnapshot(
             startTime: startTime,
             endTime: endTime,
-            taskDrafts: taskDrafts
+            taskDrafts: taskDrafts,
+            pendingTaskName: normalizedTaskTitle(taskName)
         )
     }
 
@@ -184,20 +204,20 @@ struct TaskEditScreen: View {
             }
         }
         .alert(
-            store.text(.taskEditDiscardChangesTitle),
+            discardChangesAlertTitle,
             isPresented: $showsDiscardChangesAlert
         ) {
             Button(store.text(.cancelButton), role: .cancel) {}
             Button(store.text(.taskEditDiscardChangesButton), role: .destructive) {
                 dismiss()
             }
-            if canSave {
+            if canSave && !hasPendingNewTaskDraft {
                 Button(store.text(.taskEditSaveChangesButton)) {
                     saveCurrentGroup()
                 }
             }
         } message: {
-            Text(store.text(.taskEditDiscardChangesMessage))
+            Text(discardChangesAlertMessage)
         }
         .onAppear(perform: syncFromGroupIfNeeded)
         .onChange(of: currentGroup?.id) { _, _ in
