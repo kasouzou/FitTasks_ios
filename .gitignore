@@ -1,0 +1,7 @@
+# Local environment overrides
+fittasks/.env
+
+# Xcode temporary data
+*/DerivedData/
+*.xcuserstate
+*.xcworkspace/xcuserdata/
