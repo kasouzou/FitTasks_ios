@@ -5,6 +5,14 @@ private let taskTitleMaxLength = 30
 private let defaultTaskWeight = 1
 private let defaultTaskPalette = TaskPalette.allCases.first ?? .blush
 
+private func normalizedTaskTitle(_ rawTitle: String) -> String {
+    rawTitle.trimmingCharacters(in: .whitespacesAndNewlines)
+}
+
+private func isValidTaskTitle(_ rawTitle: String) -> Bool {
+    !normalizedTaskTitle(rawTitle).isEmpty
+}
+
 private enum ActiveTimeField: Identifiable {
     case start
     case end
@@ -27,8 +35,12 @@ private struct EditableTaskDraft: Identifiable, Equatable {
         weight = task.weight
     }
 
+    var normalizedTitle: String {
+        normalizedTaskTitle(title)
+    }
+
     var taskItem: TaskItem {
-        TaskItem(id: id, title: title, palette: palette, weight: weight)
+        TaskItem(id: id, title: normalizedTitle, palette: palette, weight: weight)
     }
 }
 
@@ -82,7 +94,11 @@ struct TaskEditScreen: View {
     }
 
     private var canSave: Bool {
-        !isLoading && !isMissingTaskGroup && !taskDrafts.isEmpty && previewGroup.totalDurationSeconds > 0
+        !isLoading &&
+            !isMissingTaskGroup &&
+            !taskDrafts.isEmpty &&
+            taskDrafts.allSatisfy { !$0.normalizedTitle.isEmpty } &&
+            previewGroup.totalDurationSeconds > 0
     }
 
     private var baselineSnapshot: TaskEditSnapshot {
@@ -297,8 +313,13 @@ struct TaskEditScreen: View {
 
                     taskNameInputFooter(
                         currentCount: taskName.count,
-                        warningText: store.text(.taskNameLengthWarningFormat, taskTitleMaxLength),
-                        showsWarning: showsNameLengthWarning
+                        warningText: taskNameValidationMessage(
+                            title: taskName,
+                            lengthWarningText: store.text(.taskNameLengthWarningFormat, taskTitleMaxLength),
+                            requiredWarningText: store.text(.taskNameRequiredWarning),
+                            showsLengthWarning: showsNameLengthWarning,
+                            showsRequiredWarning: !taskName.isEmpty
+                        )
                     )
                 }
 
@@ -349,7 +370,7 @@ struct TaskEditScreen: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(FitTasksStyle.primaryAccent)
-                .disabled(taskName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .disabled(!isValidTaskTitle(taskName))
             }
         }
     }
@@ -419,8 +440,8 @@ struct TaskEditScreen: View {
     }
 
     private func addTask(named rawTitle: String) {
-        let title = rawTitle.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !title.isEmpty else { return }
+        let title = normalizedTaskTitle(rawTitle)
+        guard isValidTaskTitle(title) else { return }
 
         taskDrafts.append(
             EditableTaskDraft(
@@ -490,8 +511,13 @@ private struct EditableTaskRow: View {
 
                     taskNameInputFooter(
                         currentCount: task.title.count,
-                        warningText: store.text(.taskNameLengthWarningFormat, taskTitleMaxLength),
-                        showsWarning: showsLengthWarning,
+                        warningText: taskNameValidationMessage(
+                            title: task.title,
+                            lengthWarningText: store.text(.taskNameLengthWarningFormat, taskTitleMaxLength),
+                            requiredWarningText: store.text(.taskNameRequiredWarning),
+                            showsLengthWarning: showsLengthWarning,
+                            showsRequiredWarning: true
+                        ),
                         warningFont: .caption2
                     )
                 }
@@ -612,12 +638,11 @@ private struct LimitedTextField: UIViewRepresentable {
 @ViewBuilder
 private func taskNameInputFooter(
     currentCount: Int,
-    warningText: String,
-    showsWarning: Bool,
+    warningText: String?,
     warningFont: Font = .caption
 ) -> some View {
     HStack(alignment: .firstTextBaseline) {
-        if showsWarning {
+        if let warningText, !warningText.isEmpty {
             Text(warningText)
                 .font(warningFont)
                 .foregroundStyle(.red)
@@ -630,6 +655,24 @@ private func taskNameInputFooter(
             .font(.caption.monospacedDigit())
             .foregroundStyle(currentCount >= taskTitleMaxLength ? FitTasksStyle.primaryAccent : .secondary)
     }
+}
+
+private func taskNameValidationMessage(
+    title: String,
+    lengthWarningText: String,
+    requiredWarningText: String,
+    showsLengthWarning: Bool,
+    showsRequiredWarning: Bool
+) -> String? {
+    if showsLengthWarning {
+        return lengthWarningText
+    }
+
+    if showsRequiredWarning && !isValidTaskTitle(title) {
+        return requiredWarningText
+    }
+
+    return nil
 }
 
 private struct TimePickerSheet: View {

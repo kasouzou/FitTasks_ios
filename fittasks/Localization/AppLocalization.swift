@@ -63,6 +63,7 @@ enum AppText: String {
     case minutesPerTaskFormat
     case adPlaceholder
     case taskNameLengthWarningFormat
+    case taskNameRequiredWarning
     case taskEditDiscardChangesTitle
     case taskEditDiscardChangesMessage
     case taskEditDiscardChangesButton
@@ -89,7 +90,7 @@ enum AppLocalization {
             .languageChinese: "中文",
             .languageKorean: "한국어",
             .noTasksTitle: "まだタスクがありません",
-            .noTasksDescription: "所要時間とやることを登録すると、1タスクごとの持ち時間を自動で割り振ります。",
+            .noTasksDescription: "所要時間とタスクを登録すると、1タスクごとの持ち時間を自動で割り振ります。",
             .noTasksPrompt: "さっそく新しいタスクを追加しましょう。",
             .createFirstTask: "最初のタスクを作成",
             .addTaskTitle: "タスクを追加",
@@ -142,6 +143,7 @@ enum AppLocalization {
             .minutesPerTaskFormat: "平均 %d 分",
             .adPlaceholder: "AdMob バナー表示エリア",
             .taskNameLengthWarningFormat: "タスク名は %d 文字までです",
+            .taskNameRequiredWarning: "タスク名を入力してください",
             .taskEditDiscardChangesTitle: "保存していない変更があります",
             .taskEditDiscardChangesMessage: "このまま戻ると、追加・編集した内容は保存されません。",
             .taskEditDiscardChangesButton: "編集を破棄",
@@ -210,6 +212,7 @@ enum AppLocalization {
             .minutesPerTaskFormat: "Avg %d min",
             .adPlaceholder: "AdMob banner area",
             .taskNameLengthWarningFormat: "Task names can be up to %d characters",
+            .taskNameRequiredWarning: "Enter a task name",
             .taskEditDiscardChangesTitle: "You have unsaved changes",
             .taskEditDiscardChangesMessage: "If you go back now, your added or edited content will be lost.",
             .taskEditDiscardChangesButton: "Discard edits",
@@ -278,6 +281,7 @@ enum AppLocalization {
             .minutesPerTaskFormat: "平均 %d 分钟",
             .adPlaceholder: "AdMob 横幅区域",
             .taskNameLengthWarningFormat: "任务名最多 %d 个字符",
+            .taskNameRequiredWarning: "请输入任务名称",
             .taskEditDiscardChangesTitle: "有尚未保存的更改",
             .taskEditDiscardChangesMessage: "如果现在返回，刚刚新增或编辑的内容将不会保存。",
             .taskEditDiscardChangesButton: "放弃编辑",
@@ -346,6 +350,7 @@ enum AppLocalization {
             .minutesPerTaskFormat: "평균 %d분",
             .adPlaceholder: "AdMob 배너 영역",
             .taskNameLengthWarningFormat: "작업 이름은 최대 %d자입니다",
+            .taskNameRequiredWarning: "작업 이름을 입력하세요",
             .taskEditDiscardChangesTitle: "저장하지 않은 변경 사항이 있습니다",
             .taskEditDiscardChangesMessage: "지금 돌아가면 방금 추가하거나 수정한 내용이 저장되지 않습니다.",
             .taskEditDiscardChangesButton: "편집 폐기",
