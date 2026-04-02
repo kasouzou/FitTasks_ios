@@ -75,7 +75,7 @@ struct TaskListScreen: View {
                 }
             }
             .alert(
-                store.text(.deleteButton),
+                store.text(.deleteTaskGroupConfirmTitle),
                 isPresented: Binding(
                     get: { pendingDeleteGroup != nil },
                     set: { if !$0 { pendingDeleteGroup = nil } }
@@ -89,8 +89,6 @@ struct TaskListScreen: View {
                     store.deleteTaskGroup(group)
                     pendingDeleteGroup = nil
                 }
-            } message: { group in
-                Text(group.startTime.label + " - " + group.endTime.label)
             }
         }
     }

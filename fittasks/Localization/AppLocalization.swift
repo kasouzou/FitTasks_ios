@@ -36,6 +36,7 @@ enum AppText: String {
     case selectTimeTitle
     case taskGroupMissingTitle
     case taskGroupMissingMessage
+    case deleteTaskGroupConfirmTitle
     case deleteButton
     case editButton
     case settingsTitle
@@ -114,6 +115,7 @@ enum AppLocalization {
             .selectTimeTitle: "時刻を選択",
             .taskGroupMissingTitle: "編集対象が見つかりません",
             .taskGroupMissingMessage: "対象のタスクグループが削除された可能性があります。",
+            .deleteTaskGroupConfirmTitle: "このタスクグループを削除しますか？",
             .deleteButton: "削除",
             .editButton: "編集",
             .settingsTitle: "設定",
@@ -181,6 +183,7 @@ enum AppLocalization {
             .selectTimeTitle: "Select time",
             .taskGroupMissingTitle: "Task group not found",
             .taskGroupMissingMessage: "The selected task group may have been removed.",
+            .deleteTaskGroupConfirmTitle: "Delete this task group?",
             .deleteButton: "Delete",
             .editButton: "Edit",
             .settingsTitle: "Settings",
@@ -248,6 +251,7 @@ enum AppLocalization {
             .selectTimeTitle: "选择时间",
             .taskGroupMissingTitle: "未找到任务组",
             .taskGroupMissingMessage: "该任务组可能已经被删除。",
+            .deleteTaskGroupConfirmTitle: "要删除这个任务组吗？",
             .deleteButton: "删除",
             .editButton: "编辑",
             .settingsTitle: "设置",
@@ -315,6 +319,7 @@ enum AppLocalization {
             .selectTimeTitle: "시간 선택",
             .taskGroupMissingTitle: "작업 그룹을 찾을 수 없습니다",
             .taskGroupMissingMessage: "선택한 작업 그룹이 삭제되었을 수 있습니다.",
+            .deleteTaskGroupConfirmTitle: "이 작업 그룹을 삭제할까요?",
             .deleteButton: "삭제",
             .editButton: "편집",
             .settingsTitle: "설정",
