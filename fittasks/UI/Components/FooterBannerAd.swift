@@ -9,25 +9,29 @@ struct FooterBannerAd: View {
 
     var body: some View {
         Group {
+            if AdMobConfiguration.isBannerTemporarilyHidden {
+                EmptyView()
+            } else {
 #if canImport(GoogleMobileAds)
-            BannerAdContainer()
-                .frame(height: 56)
+                BannerAdContainer()
+                    .frame(height: 56)
 #else
-            HStack(spacing: 10) {
-                Image(systemName: "megaphone.fill")
-                    .foregroundStyle(FitTasksStyle.primaryAccent)
-                Text(store.text(.adPlaceholder))
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 56)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .strokeBorder(.white.opacity(0.35), style: StrokeStyle(lineWidth: 1, dash: [6, 4]))
-            )
+                HStack(spacing: 10) {
+                    Image(systemName: "megaphone.fill")
+                        .foregroundStyle(FitTasksStyle.primaryAccent)
+                    Text(store.text(.adPlaceholder))
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 56)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .strokeBorder(.white.opacity(0.35), style: StrokeStyle(lineWidth: 1, dash: [6, 4]))
+                )
 #endif
+            }
         }
     }
 }

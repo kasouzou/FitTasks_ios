@@ -1,5 +1,17 @@
 # iOS Rebuild Log
 
+## 2026-05-01
+
+### 実施内容
+
+- [x] スクリーンショット撮影用に下部広告枠を一時非表示化
+- [x] README の最近の実装メモを更新
+
+### 実装メモ
+
+- `AdMobConfiguration.isBannerTemporarilyHidden` を追加し、撮影終了後はこの値を `false` に戻すだけで既存の広告表示へ復帰できるようにした
+- `FooterBannerAd` は一時非表示中に `EmptyView` を返すため、AdMob バナーとプレースホルダのどちらも画面へ出ない
+
 ## 2026-04-02
 
 ### 実施内容

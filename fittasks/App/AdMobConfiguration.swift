@@ -1,6 +1,9 @@
 import Foundation
 
 struct AdMobConfiguration {
+    // 撮影用の一時停止フラグ。false に戻すと既存の AdMob 表示へ復帰する。
+    static let isBannerTemporarilyHidden = true
+
     let appID: String
     let bannerAdUnitID: String
 
