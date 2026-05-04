@@ -155,7 +155,7 @@ xcodebuild -scheme fittasks \
   CODE_SIGNING_ALLOWED=NO build
 ```
 
-`GoogleMobileAds` は Swift Package Manager 経由で参照する構成です。AdMob のアプリ ID は [Config/Info.plist](./Config/Info.plist) の `GADApplicationIdentifier`、バナー広告 ID は `ADMOB_BANNER_AD_UNIT_ID` から読みます。iOS 側の広告設定値は [fittasks/.env](./fittasks/.env) にも保持し、Xcode の file-system synchronized target でアプリバンドルへ含めたうえで `AdMobConfiguration.swift` から優先参照します。
+`GoogleMobileAds` は Swift Package Manager 経由で参照する構成です。AdMob のアプリ ID は [Config/Info.plist](./Config/Info.plist) の `GADApplicationIdentifier` から読みます。バナー広告 ID は本番 ID を公開リポジトリへ残さないため [fittasks/.env](./fittasks/.env) の `AD_UNIT_ID` を優先参照し、`ADMOB_BANNER_AD_UNIT_ID` は誤配信防止のため空にしています。
 
 `fittasks/.env.example` をコピーして `fittasks/.env` を作成し、`APP_ID`/`AD_UNIT_ID` を本番値へ置き換えてください。`fittasks/.env` は `.gitignore` で無視されており、公開リポジトリへ本番 ID を含めないためにコミットしないでください（代わりに `.env.example` を共有してローカルでのみ本番値を設定します）。
 
@@ -177,6 +177,7 @@ xcodebuild -scheme fittasks \
 ## 最近の実装メモ
 
 - 2026-05-04: 下部 AdMob バナーの一時非表示フラグを解除し、バンドル済み `.env` の本番広告 ID を読み込んで広告表示へ復旧
+- 2026-05-04: `.env` が欠けたビルドで Google のデモ広告 ID へフォールバックしないよう、Info.plist のバナー広告 ID を空値へ変更
 - 2026-05-01: スクリーンショット撮影用に、下部広告枠を `AdMobConfiguration.isBannerTemporarilyHidden` で一時非表示に変更
 - 2026-04-02: 既存タスク編集画面で、新しいタスク名を入力したまま追加せずに戻る場合も未保存警告を出すよう修正
 - 2026-04-02: タスク名は、新規追加時も既存タスク編集時も空文字や空白だけでは保存できないよう入力検証を追加

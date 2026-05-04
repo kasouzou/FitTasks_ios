@@ -6,12 +6,14 @@
 
 - [x] 下部 AdMob バナーの一時非表示フラグを解除
 - [x] バンドル済み `fittasks/.env` の本番広告 ID を優先参照する既存経路で広告表示へ復旧
+- [x] `.env` が欠けたビルドで Google のデモ広告 ID へフォールバックしないよう修正
 - [x] README の広告設定説明とプロジェクトツリーを更新
 
 ### 実装メモ
 
 - `AdMobConfiguration.isBannerTemporarilyHidden` を `false` に戻し、`FooterBannerAd` が通常どおり `BannerAdContainer` を生成する状態へ復旧した
 - Xcode の file-system synchronized target により `fittasks/.env` はローカルビルドのアプリバンドルへ含まれるため、`AdMobConfiguration` が本番 `AD_UNIT_ID` を優先して読める
+- `Config/Info.plist` の `ADMOB_BANNER_AD_UNIT_ID` は空にし、`.env` 未同梱時はテスト広告ではなく広告リクエストを抑止する
 - 本番広告 ID は `.env` に留め、コミット対象には含めない
 
 ## 2026-05-01
