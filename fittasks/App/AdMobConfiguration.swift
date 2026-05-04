@@ -1,8 +1,8 @@
 import Foundation
 
 struct AdMobConfiguration {
-    // 撮影用の一時停止フラグ。false に戻すと既存の AdMob 表示へ復帰する。
-    static let isBannerTemporarilyHidden = true
+    // 撮影時だけ true にする。通常運用では AdMob バナーを表示するため false を維持する。
+    static let isBannerTemporarilyHidden = false
 
     let appID: String
     let bannerAdUnitID: String
@@ -14,7 +14,7 @@ struct AdMobConfiguration {
     static let shared = load()
 
     private static func load() -> AdMobConfiguration {
-        // Prefer the bundled .env so the iOS target can own its ad settings directly.
+        // バンドル済みの .env を優先し、ローカルの本番 AdMob 設定で広告を読み込む。
         let envValues = bundledEnvURL().flatMap(loadValues(from:))
 
         let infoDictionary = Bundle.main.infoDictionary ?? [:]
